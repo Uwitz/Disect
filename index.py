@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from dotenv import find_dotenv, load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -31,7 +32,11 @@ class System(Bot):
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
-				await self.load_extension(f"cogs.{file[:-3]}")
+				try:
+					await self.load_extension(f"cogs.{file[:-3]}")
+					print(f"Loaded \"{file[:-3].capitalize()}\" extension")
+				except Exception as error:
+					traceback.print_exc(error)
 
 		self.loop.create_task(self.sync_commands())
 
