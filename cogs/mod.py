@@ -77,8 +77,7 @@ class Prompt(View):
 			description = f"Report sent to enforcement regarding <@!{self.target_user.id}>:\n```diff\n- {self.original_reason}\n```",
 			timestamp = datetime.utcnow(),
 			colour = 0xFF7A7A
-		)
-		embed.set_author(
+		).set_author(
 			name = self.target_user.display_name,
 			icon_url = self.target_user.display_avatar.url
 		)
@@ -88,8 +87,7 @@ class Prompt(View):
 			description = f"Ban report by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {self.reason}\n```",
 			timestamp = datetime.utcnow(),
 			colour = 0xFF7A7A
-		)
-		report_embed.set_author(
+		).set_author(
 			name = self.target_user.display_name,
 			icon_url = self.target_user.display_avatar.url
 		)
@@ -135,8 +133,7 @@ class Mod(Cog):
 					description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
 					timestamp = datetime.utcnow(),
 					color = 0xFF7A7A
-				)
-				report.set_author(
+				).set_author(
 					name = member.display_name,
 					icon_url = member.display_avatar.url
 				)
@@ -156,8 +153,7 @@ class Mod(Cog):
 				description = f"Would you like to confirm that you want to send a ban report about <@!{member.id}> for:\n```diff\n- {reason}\n```",
 				timestamp = datetime.utcnow(),
 				colour = 0xFF7A7A
-			)
-			confirmation_embed.set_author(
+			).set_author(
 				name = member.display_name,
 				icon_url = member.display_avatar.url
 			)
@@ -176,8 +172,7 @@ class Mod(Cog):
 				description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
 				timestamp = datetime.utcnow(),
 				color = 0xFF7A7A
-			)
-			report.set_author(
+			).set_author(
 				name = member.display_name,
 				icon_url = member.display_avatar.url
 			)
