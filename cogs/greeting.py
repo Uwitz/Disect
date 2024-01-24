@@ -66,3 +66,6 @@ class Greeting(Cog):
                 icon_url = member_after.display_avatar.url
             )
             await member_after.guild.system_channel.send(embed = embed)
+
+async def setup(bot):
+    await bot.add_cog(Greeting(bot))
