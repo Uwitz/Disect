@@ -75,7 +75,7 @@ class Prompt(View):
 		await self.target_user.timeout(duration, reason = "Waiting for banishment requestion completion.")
 		embed = Embed(
 			description = f"Report sent to enforcement regarding <@!{self.target_user.id}>:\n```diff\n- {self.original_reason}\n```",
-			timestamp = datetime.utcnow(),
+			timestamp = datetime.now(),
 			colour = 0xFF7A7A
 		).set_author(
 			name = self.target_user.display_name,
@@ -85,7 +85,7 @@ class Prompt(View):
 
 		report_embed = Embed(
 			description = f"Ban report by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {self.reason}\n```",
-			timestamp = datetime.utcnow(),
+			timestamp = datetime.now(),
 			colour = 0xFF7A7A
 		).set_author(
 			name = self.target_user.display_name,
@@ -131,7 +131,7 @@ class Mod(Cog):
 					await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
 				report = Embed(
 					description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
-					timestamp = datetime.utcnow(),
+					timestamp = datetime.now(),
 					color = 0xFF7A7A
 				).set_author(
 					name = member.display_name,
@@ -151,7 +151,7 @@ class Mod(Cog):
 
 			confirmation_embed = Embed(
 				description = f"Would you like to confirm that you want to send a ban report about <@!{member.id}> for:\n```diff\n- {reason}\n```",
-				timestamp = datetime.utcnow(),
+				timestamp = datetime.now(),
 				colour = 0xFF7A7A
 			).set_author(
 				name = member.display_name,
@@ -170,7 +170,7 @@ class Mod(Cog):
 		else:
 			report = Embed(
 				description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
-				timestamp = datetime.utcnow(),
+				timestamp = datetime.now(),
 				color = 0xFF7A7A
 			).set_author(
 				name = member.display_name,

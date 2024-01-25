@@ -26,7 +26,7 @@ class Greeting(Cog):
                 )
             )
             embed = Embed(
-                timestamp = datetime.now().isoformat(),
+                timestamp = datetime.now(),
                 description = f"Your account is too new, therefore not trusted to participate and interact with the discord server.\nThis is to prevent spam accounts joining our Discord Server, please rejoin <t:{reletive_timestamp}:R>.\n\nIf you'd like to join the discord server regardless of this restriction, please email us at `border@snyco.uk` with your Discord ID.",
                 colour = 0xFF7979
             ).set_author(
@@ -43,7 +43,7 @@ class Greeting(Cog):
     async def onboard_completion(self, member_before: Member, member_after: Member):
         if (member_before.pending and not member_after.pending and not os.getenv("DISABLED_ROLE") in [role.id for role in member_after.roles]):
             embed = Embed(
-                timestamp = datetime.now().isoformat(),
+                timestamp = datetime.now(),
                 description = random.choice(
                     [
                         f"Welcome to the world of Snyco <@!{member_after.id}>!",
