@@ -66,6 +66,8 @@ class Greeting(Cog):
                 icon_url = member_after.display_avatar.url
             )
             await member_after.guild.system_channel.send(embed = embed)
+            member_role: Role = member_after.guild.get_role(os.getenv("MEMBER_ROLE"))
+            await member_after.add_roles(member_role, reason = "Onboard Completed")
 
 async def setup(bot):
     await bot.add_cog(Greeting(bot))
