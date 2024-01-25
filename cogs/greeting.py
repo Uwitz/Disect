@@ -33,7 +33,7 @@ class Greeting(Cog):
                 name = "Disabled Account",
                 icon_url = "https://i.ibb.co/rdDr0Pq/cancel.png"
             ).set_footer(
-                "Snyco's World",
+                text = "Snyco's World",
                 icon_url = member.guild.icon.url
             )
             await member.send(embed = embed)
@@ -64,6 +64,9 @@ class Greeting(Cog):
                     ]
                 ),
                 icon_url = member_after.display_avatar.url
+            ).set_footer(
+                text = "Snyco's World",
+                icon_url = member_after.guild.icon.url
             )
             await member_after.guild.system_channel.send(embed = embed)
             member_role: Role = member_after.guild.get_role(int(os.getenv("MEMBER_ROLE")))
