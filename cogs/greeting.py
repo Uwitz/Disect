@@ -13,7 +13,7 @@ class Greeting(Cog):
 
     @Cog.listener("on_member_join")
     async def join_event(self, member: Member):
-        if int(member.created_at.timestamp()) < int(datetime.now().timestamp()) - 2592000:
+        if int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000:
             while member.pending:
                 asyncio.sleep(1)
                 continue
