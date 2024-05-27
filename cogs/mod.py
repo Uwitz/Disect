@@ -1,4 +1,5 @@
 import os
+import re
 
 from datetime import datetime, timedelta
 
@@ -187,6 +188,37 @@ class Mod(Cog):
 
 			await report_channel.send(embed = report)
 			return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Sudo Banished User.", ephemeral = True)
+
+	@command(
+		name = "mute",
+		description = "Mute a member with a valid reason."
+	)
+	async def mute(self, interaction: Interaction, member: Member, duration: str, reason: str):
+		if re.compile(r"^[0-9]+[hdmy]$", re.IGNORECASE).match(duration) is None:
+			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Invalid duration format. Please use the following format: `1h`, `2d`, `3m` or `4y`.", ephemeral = True)
+
+		duration_unit = duration[-1].lower()
+		if duration_unit == 'h':
+			future_time = timedelta(hours = int(duration[:-1]))
+		elif duration_unit == 'd':
+			future_time = timedelta(days = int(duration[:-1]))
+		elif duration_unit == 'm':
+			future_time = timedelta(minutes = int(duration[:-1]))
+		elif duration_unit == 'y':
+			future_time = timedelta(years = int(duration[:-1]))
+		else:
+			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Invalid duration unit. Please use one of the following units: `h`, `d`, `m`, `y`.", ephemeral=True)
+
+		if not interaction.user.id == int(os.getenv("OWNER_ID")):
+			if (interaction.guild.get_role(os.getenv("ADMINISTRATOR_ROLE")) in interaction.user.roles) or (interaction.user.guild_permissions.administrator):
+				if interaction.user.guild_permissions.administrator or (
+					(os.getenv("ADMINISTRATOR_ROLE"), os.getenv("MODERATOR_ROLE")) in [role.id for role in interaction.user.roles]
+				):
+					await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
+				return
+
+		await member.timeout(until = future_time, reason = reason)
+		await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Muted User.", ephemeral = True)
 
 async def setup(bot):
 	await bot.add_cog(Mod(bot))
