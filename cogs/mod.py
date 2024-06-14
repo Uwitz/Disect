@@ -102,7 +102,6 @@ class Prompt(View):
 			)
 		)
 
-
 	@button(
 		label = "Cancel",
 		style = ButtonStyle.grey
@@ -217,8 +216,8 @@ class Mod(Cog):
 					await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
 				return
 
-		await member.timeout(until = future_time, reason = reason)
-		await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Muted User.", ephemeral = True)
+		await member.timeout(duration = future_time, reason = reason)
+		await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Muted user successfully.")
 
 async def setup(bot):
 	await bot.add_cog(Mod(bot))
