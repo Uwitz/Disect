@@ -8,6 +8,8 @@ from typing import Any, Coroutine
 from discord import Intents, Object
 from discord.ext.commands import Bot
 
+from .encryption import Encryption
+
 class System(Bot):
 	def __init__(self):
 		intents = Intents.all()
@@ -30,6 +32,12 @@ class System(Bot):
 		await self.tree.sync()
 
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
+		self.encryption = Encryption()
+		try:
+			self.encryption.load_credentials()
+		except FileNotFoundError:
+			self.encryption.generate_credentials()
+
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
 				try:
