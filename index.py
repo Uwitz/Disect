@@ -16,14 +16,6 @@ class System(Bot):
 		super().__init__(intents = intents, command_prefix = "/")
 
 	async def start(self, *args, **kwargs):
-		if os.getenv("MONGO_TLS") == "True":
-			self.database = AsyncIOMotorClient(
-				os.getenv("MONGO"),
-				tls = True,
-				tlsCertificateKeyFile = "mongo_cert.pem"
-			)
-		else:
-			self.database = AsyncIOMotorClient(os.getenv("MONGO"))
 		self.core_guild = int(os.getenv("GUILD"))
 		await super().start(*args, **kwargs)
 
@@ -37,6 +29,15 @@ class System(Bot):
 			self.encryption.load_credentials()
 		except FileNotFoundError:
 			self.encryption.generate_credentials()
+
+		if os.getenv("MONGO_TLS") == "True":
+			self.database = AsyncIOMotorClient(
+				os.getenv("MONGO"),
+				tls = True,
+				tlsCertificateKeyFile = "mongo_cert.pem"
+			)
+		else:
+			self.database = AsyncIOMotorClient(os.getenv("MONGO"))
 
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
