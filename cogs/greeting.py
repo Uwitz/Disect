@@ -15,7 +15,7 @@ class Greeting(Cog):
     async def join_event(self, member: Member):
         if int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000:
             while member.pending:
-                asyncio.sleep(1)
+                asyncio.sleep(0.5)
                 continue
             disabled_role: Role = member.guild.get_role(int(os.getenv("DISABLED_ROLE")))
             reletive_timestamp = (
