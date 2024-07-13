@@ -48,7 +48,7 @@ class Greeting(Cog):
 
     @Cog.listener("on_member_update")
     async def onboard_completion(self, member_before: Member, member_after: Member):
-        server_config = await self.bot.database["config"].find_one(
+        server_config: dict | None = await self.bot.database["config"].find_one(
             {
                 "_id": member_after.guild.id
             }

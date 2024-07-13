@@ -60,12 +60,12 @@ class GlobalModeration(Cog):
 
 	@Cog.listener("on_member_join")
 	async def ban_check(self, member: Member):
-		member_record = await self.bot.database["members"].find_one(
+		member_record: dict | None = await self.bot.database["members"].find_one(
 			{
 				"_id": member.id
 			}
 		)
-		guild_config = await self.bot.database["config"].find_one(
+		guild_config: dict | None = await self.bot.database["config"].find_one(
 			{
 				"_id": member.guild.id
 			}
