@@ -8,7 +8,7 @@ from typing import Any, Coroutine
 from discord import Intents, Object
 from discord.ext.commands import Bot
 
-from .encryption import Encryption
+from encryption import Encryption
 
 class System(Bot):
 	def __init__(self):

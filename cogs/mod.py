@@ -9,7 +9,7 @@ from discord.ui import View, button
 from discord.app_commands import command, describe
 from discord.ext.commands import Cog
 
-from .utils.checks import Checks
+from cogs.utils.checks import Checks
 
 class BanPrompt(View):
 	def __init__(self, target_user: Member, reason: str, original_embed: Embed):
