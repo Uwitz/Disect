@@ -2,6 +2,7 @@ import os
 import re
 
 from datetime import datetime, timedelta
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from discord import Button, ButtonStyle, Embed, Interaction, Member, TextChannel
 from discord.ui import View, button
@@ -73,9 +74,9 @@ class Prompt(View):
 	)
 	async def confirm(self, button: Button, interaction: Interaction):
 		duration = timedelta(days = 5)
-		await self.target_user.timeout(duration, reason = "Waiting for banishment requestion completion.")
+		await self.target_user.timeout(duration, reason = "Awaiting ban requestion completion.")
 		embed = Embed(
-			description = f"Report sent to enforcement regarding <@!{self.target_user.id}>:\n```diff\n- {self.original_reason}\n```",
+			description = f"Report sent to enforcement regarding <@!{self.target_user.id}>:\n```diff\n - {self.original_reason}\n```",
 			timestamp = datetime.now(),
 			colour = 0xFF7A7A
 		).set_author(
@@ -119,7 +120,7 @@ class Mod(Cog):
 		name = "ban",
 		description = "Banish a member with a valid reason.",
 	)
-	@describe(member = "The member you'd like banished.")
+	@describe(member = "The member you'd like banned.")
 	@describe(reason = "Why should the member be banned?")
 	async def ban(self, interaction: Interaction, member: Member, reason: str):
 		report_channel = self.bot.get_channel(os.getenv("ENFORCEMENT"))
