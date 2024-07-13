@@ -92,3 +92,6 @@ class GlobalModeration(Cog):
 					reason = member_record.get("global_ban_reason")
 				)
 			)
+
+async def setup(bot):
+	await bot.add_cog(GlobalModeration(bot))
