@@ -14,7 +14,7 @@ class Encryption:
 
 	@classmethod
 	def load_credentials(cls):
-		if not os.isfile("./resources/credentials.json"):
+		if not os.path.isfile("./resources/credentials.json"):
 			raise FileNotFoundError("Encryption Credentials file not found.")
 
 		credentials: dict = json.load(open("./resources/credentials.json", "r"))
