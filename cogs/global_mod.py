@@ -81,7 +81,7 @@ class GlobalModeration(Cog):
 		else:
 			report_channel = self.bot.get_channel(guild_config.get("moderation").get("warning_channel"))
 			report_embed = Embed(
-				description = f"This member has been banned Federation-wide for:\n```diff\n-{member_record.get("global_ban_reason")}",
+				description = f"This member has been banned Federation-wide for:\n```diff\n-{member_record.get('global_ban_reason')}",
 				colour = 0x2B2D31
 			)
 			return await report_channel.send(
