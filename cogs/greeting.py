@@ -17,7 +17,13 @@ class Greeting(Cog):
             while member.pending:
                 asyncio.sleep(0.5)
                 continue
-            disabled_role: Role = member.guild.get_role(int(os.getenv("DISABLED_ROLE")))
+
+            server_config: dict | None = await self.bot.database["config"].find_one(
+                {
+                    "_id": member.guild.id
+                }
+            )
+            disabled_role: Role = member.guild.get_role(int(server_config.get("roles").get("disabled")))
             reletive_timestamp = (
                 int(datetime.now().timestamp()) + (
                     (
