@@ -27,17 +27,18 @@ class Greeting(Cog):
             )
             embed = Embed(
                 timestamp = datetime.now(),
-                description = f"Your account is too new, therefore not trusted to participate and interact with the discord server.\nThis is to prevent spam accounts joining our Discord Server, please rejoin <t:{reletive_timestamp}:R>.\n\nIf you'd like to join the discord server regardless of this restriction, please email us at `border@snyco.uk` with your Discord ID.",
+                description = f"Your account is too new, therefore not trusted to participate and interact with the discord server.\nThis is to prevent spam accounts joining our Discord Server, please rejoin <t:{reletive_timestamp}:R>.\n\nIf you'd like to join the discord server regardless of this restriction, please email us at `border@uwitz.org` with your Discord ID.",
                 colour = 0xFF7979
             ).set_author(
                 name = "Disabled Account",
                 icon_url = "https://i.ibb.co/rdDr0Pq/cancel.png"
             ).set_footer(
-                text = "Snyco's World",
+                text = member.guild.name,
                 icon_url = member.guild.icon.url
             )
             await member.send(embed = embed)
             await member.add_roles(disabled_role, reason = "Disabled User from interacting with Server.")
+
 
     @Cog.listener("on_member_update")
     async def onboard_completion(self, member_before: Member, member_after: Member):
