@@ -118,12 +118,6 @@ class Mod(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-
-
-
-
-
-
 	@command(
 		name = "mute",
 		description = "Mute a member with a valid reason."
