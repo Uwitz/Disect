@@ -9,9 +9,8 @@ from Crypto.Util.Padding import pad,unpad
 from motor.motor_asyncio import AsyncIOMotorClient
 
 class Encryption:
-	def __init__(self, key, iv):
-		self.key = key
-		self.iv = iv
+	def __init__(self):
+		self._ = None
 
 	@classmethod
 	def load_credentials(cls):
