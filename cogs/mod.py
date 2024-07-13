@@ -29,7 +29,7 @@ class BanPrompt(View):
 				delete_message_seconds = 60
 			)
 		except:
-			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} The Royal Defence is not authorised to ban this user.")
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} You are not authorised to this user.")
 		button.disabled = True
 		button.style = ButtonStyle.green
 		for button_ in self.children:
@@ -162,7 +162,7 @@ class Mod(Cog):
 						(not Checks.roles_in_roles(server_config.get("roles").get("moderators"), interaction.user.roles))
 					) and not interaction.user.guild_permissions.administrator
 				):
-					return await interaction.response.send(f"{os.getenv('EMOJI_FAIL')} You are not authorised to moderate another person in authority.")
+					return await interaction.response.send(f"{os.getenv('EMOJI_FAIL')} You are not authorised to moderate another authoritative user.")
 
 			else:
 				await member.timeout(
