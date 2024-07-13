@@ -194,8 +194,16 @@ class Mod(Cog):
 		description = "Mute a member with a valid reason."
 	)
 	async def mute(self, interaction: Interaction, member: Member, duration: str, reason: str):
+		server_config: dict | None = await self.bot.database["config"].find_one(
+			{
+				"_id": member.guild.id
+			}
+		)
 		if re.compile(r"^[0-9]+[hdmy]$", re.IGNORECASE).match(duration) is None:
-			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Invalid duration format. Please use the following format: `1h`, `2d`, `3m` or `4y`.", ephemeral = True)
+			return await interaction.response.send_message(
+				f"{os.getenv("EMOJI_FAIL")} Invalid duration format. Please use the following format: `1h`, `2d`, `3m` or `4y`.",
+				ephemeral = True
+			)
 
 		duration_unit = duration[-1].lower()
 		if duration_unit == 'h':
@@ -207,18 +215,26 @@ class Mod(Cog):
 		elif duration_unit == 'y':
 			future_time = timedelta(years = int(duration[:-1]))
 		else:
-			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Invalid duration unit. Please use one of the following units: `h`, `d`, `m`, `y`.", ephemeral=True)
+			return await interaction.response.send_message(
+				f"{os.getenv("EMOJI_FAIL")} Invalid duration unit. Please use one of the following units: `h`, `d`, `m`, `y`.",
+				ephemeral = True
+			)
 
-		if not interaction.user.id == int(os.getenv("OWNER_ID")):
-			if (interaction.guild.get_role(os.getenv("ADMINISTRATOR_ROLE")) in interaction.user.roles) or (interaction.user.guild_permissions.administrator):
-				if interaction.user.guild_permissions.administrator or (
-					(os.getenv("ADMINISTRATOR_ROLE"), os.getenv("MODERATOR_ROLE")) in [role.id for role in interaction.user.roles]
+		if not interaction.user.id == interaction.guild.owner.id:
+			if (
+					(
+						(not Checks.roles_in_roles(server_config.get("roles").get("administrators"), interaction.user.roles)) or
+						(not Checks.roles_in_roles(server_config.get("roles").get("moderators"), interaction.user.roles))
+					) and not interaction.user.guild_permissions.administrator
 				):
-					await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
-				return
+					return await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
 
-		await member.timeout(duration = future_time, reason = reason)
-		await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Muted user successfully.")
+			else:
+				await member.timeout(
+					duration = future_time,
+					reason = reason
+				)
+				return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Muted user successfully.")
 
 async def setup(bot):
 	await bot.add_cog(Mod(bot))
