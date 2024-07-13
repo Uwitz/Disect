@@ -29,7 +29,7 @@ class BanPrompt(View):
 				delete_message_seconds = 60
 			)
 		except:
-			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} The Royal Defence is not authorised to ban this user.")
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} The Royal Defence is not authorised to ban this user.")
 		button.disabled = True
 		button.style = ButtonStyle.green
 		for button_ in self.children:
@@ -111,7 +111,7 @@ class Prompt(View):
 	)
 	async def cancel(self, button, interaction):
 		await interaction.response.edit_message(
-			content = f"{os.getenv("EMOJI_SUCCESS")} Cancelled Ban Request"
+			content = f"{os.getenv('EMOJI_SUCCESS')} Cancelled Ban Request"
 		)
 
 class Mod(Cog):
@@ -136,7 +136,7 @@ class Mod(Cog):
 		)
 		if re.compile(r"^[0-9]+[hdmy]$", re.IGNORECASE).match(duration) is None:
 			return await interaction.response.send_message(
-				f"{os.getenv("EMOJI_FAIL")} Invalid duration format. Please use the following format: `1h`, `2d`, `3m` or `4y`.",
+				f"{os.getenv('EMOJI_FAIL')} Invalid duration format. Please use the following format: `1h`, `2d`, `3m` or `4y`.",
 				ephemeral = True
 			)
 
@@ -151,7 +151,7 @@ class Mod(Cog):
 			future_time = timedelta(years = int(duration[:-1]))
 		else:
 			return await interaction.response.send_message(
-				f"{os.getenv("EMOJI_FAIL")} Invalid duration unit. Please use one of the following units: `h`, `d`, `m`, `y`.",
+				f"{os.getenv('EMOJI_FAIL')} Invalid duration unit. Please use one of the following units: `h`, `d`, `m`, `y`.",
 				ephemeral = True
 			)
 
@@ -162,14 +162,14 @@ class Mod(Cog):
 						(not Checks.roles_in_roles(server_config.get("roles").get("moderators"), interaction.user.roles))
 					) and not interaction.user.guild_permissions.administrator
 				):
-					return await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
+					return await interaction.response.send(f"{os.getenv('EMOJI_FAIL')} You are not authorised to moderate another person in authority.")
 
 			else:
 				await member.timeout(
 					duration = future_time,
 					reason = reason
 				)
-				return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Muted user successfully.")
+				return await interaction.response.send_message(f"{os.getenv('EMOJI_SUCCESS')} Muted user successfully.")
 
 async def setup(bot):
 	await bot.add_cog(Mod(bot))

@@ -26,7 +26,7 @@ class WarningPrompt(View):
 				delete_message_seconds = 60
 			)
 		except:
-			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} The Royal Defence is not authorised to ban this user.")
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} The Royal Defence is not authorised to ban this user.")
 		button.disabled = True
 		button.style = ButtonStyle.green
 		for button_ in self.children:
