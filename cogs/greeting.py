@@ -12,17 +12,23 @@ class Greeting(Cog):
         self.bot = bot
 
     @Cog.listener("on_member_join")
-    async def join_event(self, member: Member):
-        if int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000:
+    async def onboard_completion(self, member: Member):
+        member_record: dict | None = await self.bot.database["members"].find_one(
+            {
+                "_id": member.id
+            }
+        )
+        server_config: dict | None = await self.bot.database["config"].find_one(
+            {
+                "_id": member.guild.id
+            }
+        )
+        
+        if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and not member_record.get("bypass").get(f"{member.guild.id}"):
             while member.pending:
                 asyncio.sleep(0.5)
                 continue
 
-            server_config: dict | None = await self.bot.database["config"].find_one(
-                {
-                    "_id": member.guild.id
-                }
-            )
             disabled_role: Role = member.guild.get_role(int(server_config.get("roles").get("disabled")))
             reletive_timestamp = (
                 int(datetime.now().timestamp()) + (
@@ -45,46 +51,39 @@ class Greeting(Cog):
             await member.send(embed = embed)
             await member.add_roles(disabled_role, reason = "Disabled User from interacting with Server.")
 
-
-    @Cog.listener("on_member_update")
-    async def onboard_completion(self, member_before: Member, member_after: Member):
-        server_config: dict | None = await self.bot.database["config"].find_one(
-            {
-                "_id": member_after.guild.id
-            }
-        )
-        if ((member_before.pending and not member_after.pending) and not server_config.get("roles").get("disabled") in [role.id for role in member_after.roles]):
-            if server_config.get("join_greeting"):
-                embed = Embed(
-                    timestamp = datetime.now(),
-                    description = random.choice(
-                        [
-                            f"Welcome to the {member_after.guild.name} <@!{member_after.id}>!",
-                            f"We hope you have a nice stay <@!{member_after.id}>",
-                            f"Make yourself at home <@!{member_after.id}>! *(with the rules in mind that is)*",
-                            f"Welcome to {member_after.guild.name} <@!{member_after.id}>!"
-                        ]
-                    ),
-                    colour = 0x2B2D31
-                ).set_author(
-                    name = random.choice(
-                        [
-                            f"{member_after.name.capitalize()} Joined!",
-                            f"Welcome {member_after.name.capitalize()}!",
-                            f"{member_after.name.capitalize()} Entered!",
-                            f"{member_after.name.capitalize()} Landed",
-                            f"{member_after.name.capitalize()} crossed the border",
-                            f"Welcome onboard {member_after.name.capitalize()}!"
-                        ]
-                    ),
-                    icon_url = member_after.display_avatar.url
-                ).set_footer(
-                    text = member_after.guild.name,
-                    icon_url = member_after.guild.icon.url
-                )
-                await member_after.guild.system_channel.send(embed = embed)
-            member_role: Role = member_after.guild.get_role(server_config.get("roles").get("member"))
-            await member_after.add_roles(member_role, reason = "Onboard Completed")
+        else:
+            if ((not member.pending) and not server_config.get("roles").get("disabled") in [role.id for role in member.roles]):
+                if server_config.get("join_greeting"):
+                    embed = Embed(
+                        timestamp = datetime.now(),
+                        description = random.choice(
+                            [
+                                f"Welcome to the {member.guild.name} <@!{member.id}>!",
+                                f"We hope you have a nice stay <@!{member.id}>",
+                                f"Make yourself at home <@!{member.id}>! *(with the rules in mind that is)*",
+                                f"Welcome to {member.guild.name} <@!{member.id}>!"
+                            ]
+                        ),
+                        colour = 0x2B2D31
+                    ).set_author(
+                        name = random.choice(
+                            [
+                                f"{member.name.capitalize()} Joined!",
+                                f"Welcome {member.name.capitalize()}!",
+                                f"{member.name.capitalize()} Entered!",
+                                f"{member.name.capitalize()} Landed",
+                                f"{member.name.capitalize()} crossed the border",
+                                f"Welcome onboard {member.name.capitalize()}!"
+                            ]
+                        ),
+                        icon_url = member.display_avatar.url
+                    ).set_footer(
+                        text = member.guild.name,
+                        icon_url = member.guild.icon.url
+                    )
+                    await member.guild.system_channel.send(embed = embed)
+                member_role: Role = member.guild.get_role(server_config.get("roles").get("member"))
+                await member.add_roles(member_role, reason = "Onboard Completed")
 
 async def setup(bot):
     await bot.add_cog(Greeting(bot))
