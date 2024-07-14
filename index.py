@@ -35,9 +35,9 @@ class System(Bot):
 				os.getenv("MONGO"),
 				tls = True,
 				tlsCertificateKeyFile = "mongo_cert.pem"
-			)
+			)["disect"]
 		else:
-			self.database = AsyncIOMotorClient(os.getenv("MONGO"))
+			self.database = AsyncIOMotorClient(os.getenv("MONGO"))["disect"]
 
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
