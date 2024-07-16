@@ -12,6 +12,8 @@ from encryption import Encryption
 
 class System(Bot):
 	def __init__(self):
+		self.loaded_extension_list = []
+		self.unloaded_extension_list = []
 		intents = Intents.all()
 		super().__init__(intents = intents, command_prefix = "/")
 
@@ -43,8 +45,10 @@ class System(Bot):
 			if file.endswith(".py"):
 				try:
 					await self.load_extension(f"cogs.{file[:-3]}")
-					print(f"Loaded \"{file[:-3].capitalize()}\" extension")
+					self.loaded_extension_list.append(file[:-3])
+					print(f"Loaded \"{file[:-3]}\" extension")
 				except Exception as error:
+					self.unloaded_extension_list.append(file[:-3])
 					traceback.print_exc(error)
 
 		self.loop.create_task(self.sync_commands())
