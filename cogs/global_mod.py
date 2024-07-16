@@ -1,7 +1,7 @@
 import os
 
 from discord import Member
-from discord.ext.commands import Cog
+from discord.ext.commands import Bot, Cog
 
 from discord import Button, ButtonStyle, Embed, Interaction, Member, TextChannel
 from discord.ui import View, button
@@ -55,7 +55,7 @@ class WarningPrompt(View):
 		...
 
 class GlobalModeration(Cog):
-	def __init__(self, bot):
+	def __init__(self, bot: Bot):
 		self.bot = bot
 
 	@Cog.listener("on_member_join")
@@ -93,5 +93,5 @@ class GlobalModeration(Cog):
 				)
 			)
 
-async def setup(bot):
+async def setup(bot: Bot):
 	await bot.add_cog(GlobalModeration(bot))
