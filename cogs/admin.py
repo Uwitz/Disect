@@ -4,14 +4,14 @@ import traceback
 from typing import List
 
 from discord import Interaction, Object
-from discord.app_commands import Choice, Group, command, describe
+from discord.app_commands import Choice, Group, autocomplete
 from discord.ext.commands import Bot, Cog
 
 class Admin(Cog):
 	def __init__(self, bot: Bot):
 		self.bot = bot
 
-	async def unloaded_extensions(
+	async def unloaded_extension_list(
 		self,
 		interaction: Interaction,
 		current: str
@@ -24,10 +24,10 @@ class Admin(Cog):
 			for extension in [
 				extension[:-3]
 				for extension in os.listdir("./cogs") if extension.endswith(".py")
-			] if (current.lower() in extension.lower()) and (extension not in self.bot.loaded_extensions)
+			] if (current.lower() in extension.lower()) and (extension not in self.bot.loaded_extension_list)
 		]
 
-	async def loaded_extensions(
+	async def loaded_extension_list(
 		self,
 		interaction: Interaction,
 		current: str
@@ -40,13 +40,13 @@ class Admin(Cog):
 			for extension in [
 				extension[:-3]
 				for extension in os.listdir("./cogs") if extension.endswith(".py")
-			] if (current.lower() in extension.lower()) and (extension in self.bot.loaded_extensions)
+			] if (current.lower() in extension.lower()) and (extension in self.bot.loaded_extension_list)
 		]
 
-	cog = Group(name="cog")
+	cog = Group(name="cog", description = "Group of commands to manage cogs.")
 
 	@cog.command(name = "load", description = "Load a cog.")
-	@cog.autocomplete(extension = unloaded_extensions)
+	@autocomplete(extension = unloaded_extension_list)
 	async def load(self, interaction: Interaction, extension: str):
 		try:
 			await self.bot.load_extension(f"cogs.{extension}")
@@ -60,9 +60,10 @@ class Admin(Cog):
 			)
 
 	@cog.command(name = "unload", description = "Unload a cog.")
-	@cog.describe(name = "extension", description = "Extension file to unload.")
-	@cog.autocomplete(extensions = loaded_extensions)
-	async def unload(self, interaction: Interaction, extension):
+	@autocomplete(extension = loaded_extension_list)
+	async def unload(self, interaction: Interaction, extension: str):
+		if extension == "admin":
+			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Unloading `cogs.{extension}` is disallowed")
 		try:
 			await self.bot.unload_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
@@ -75,9 +76,8 @@ class Admin(Cog):
 			)
 
 	@cog.command(name = "reload", description = "Reload a cog.")
-	@cog.describe(name = "extension", description = "Extension file to unload.")
-	@cog.autocomplete(extensions = loaded_extensions)
-	async def unload(self, interaction: Interaction, extension):
+	@autocomplete(extension = loaded_extension_list)
+	async def reload(self, interaction: Interaction, extension: str):
 		try:
 			await self.bot.reload_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
