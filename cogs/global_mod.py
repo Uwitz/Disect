@@ -19,14 +19,14 @@ class WarningPrompt(View):
 		label = "Ban",
 		style = ButtonStyle.red
 	)
-	async def ban(self, button: Button, interaction: Interaction):
+	async def ban(self, interaction: Interaction, button: Button):
 		try:
 			await self.target_user.ban(
 				reason = self.reason,
 				delete_message_seconds = 60
 			)
 		except:
-			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} You are not authorised to ban this user.")
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} Insufficient permissions to ban user.")
 		button.disabled = True
 		button.style = ButtonStyle.green
 		for button_ in self.children:
@@ -44,15 +44,15 @@ class WarningPrompt(View):
 		label = "Infractions",
 		style = ButtonStyle.blurple
 	)
-	async def infractions(self, button: Button, interaction: Interaction):
+	async def infractions(self, interaction: Interaction, button: Button):
 		...
 
 	@button(
 		label = "Release",
 		style = ButtonStyle.grey
 	)
-	async def cancel(self, button: Button, interaction: Interaction):
 		...
+	async def cancel(self, interaction: Interaction, button: Button):
 
 class GlobalModeration(Cog):
 	def __init__(self, bot: Bot):
