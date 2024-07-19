@@ -1,4 +1,3 @@
-import os
 import random
 import asyncio
 
@@ -23,7 +22,7 @@ class Greeting(Cog):
                 "_id": member.guild.id
             }
         )
-        
+
         if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and not member_record.get("bypass").get(f"{member.guild.id}"):
             while member.pending:
                 asyncio.sleep(0.5)

@@ -8,11 +8,22 @@ from discord.ui import View, button
 from discord.ext.commands import Cog
 
 class WarningPrompt(View):
-	def __init__(self, bot_object: Bot, ban_timestamp: int, target_user: Member, member_record: dict, reason: str):
+	def __init__(
+		self,
+		bot_object: Bot,
+		ban_timestamp: int,
+		target_user: Member,
+		member_record: dict,
+		disabled_role: int,
+		guild_id: int,
+		reason: str
+	):
 		self.bot_object = bot_object
 		self.ban_timestamp = ban_timestamp
 		self.target_user = target_user
 		self.member_record = member_record
+		self.disabled_role = disabled_role
+		self.guild_id = guild_id
 		self.reason = reason
 		super().__init__(timeout = None)
 
@@ -60,6 +71,8 @@ class WarningPrompt(View):
 			text = "Uwitz Federation",
 			icon_url = self.bot_object.user.display_avatar.url
 		)
+		disabled_role = self.bot_object.get_guild(self.guild_id).get_role(self.disabled_role)
+		await self.target_user.remove_roles(disabled_role, reason = f"Released by {interaction.user.name}")
 		await interaction.response.edit_message(embed = embed, view = self)
 
 class GlobalModeration(Cog):
@@ -104,6 +117,8 @@ class GlobalModeration(Cog):
 					ban_timestamp = member_record.get("infractions").get("global_ban").get("reason"),
 					target_user = member,
 					record = member_record,
+					disabled_role = guild_config.get("roles").get("disabled"),
+					guild_id = member.guild.id,
 					reason = member_record.get("infractions").get("global_ban").get("reason")
 				)
 			)
