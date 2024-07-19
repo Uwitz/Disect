@@ -5,7 +5,6 @@ from discord.ext.commands import Bot, Cog
 
 from discord import Button, ButtonStyle, Embed, Interaction, Member, TextChannel
 from discord.ui import View, button
-from discord.app_commands import command, describe
 from discord.ext.commands import Cog
 
 class WarningPrompt(View):
@@ -72,8 +71,8 @@ class GlobalModeration(Cog):
 		)
 
 		if guild_config.get("moderation").get("auto_ban"):
-			if member_record.get("infractions").get("global_ban"):
-				await member.ban(reason = member_record.get("infractions").get("global_ban_reason"))
+			if member_record.get("infractions").get("global_ban").get("banned"):
+				await member.ban(reason = member_record.get("infractions").get("global_ban").get("reason"))
 
 			else:
 				return
@@ -89,7 +88,7 @@ class GlobalModeration(Cog):
 				view = WarningPrompt(
 					target_user = member,
 					record = member_record,
-					reason = member_record.get("infractions").get("global_ban_reason")
+					reason = member_record.get("infractions").get("global_ban").get("reason")
 				)
 			)
 
