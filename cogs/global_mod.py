@@ -3,7 +3,7 @@ import os
 from discord import Member
 from discord.ext.commands import Bot, Cog
 
-from discord import Button, ButtonStyle, Embed, Interaction, Member
+from discord import Button, ButtonStyle, Embed, Interaction, Member, Role
 from discord.ui import View, button
 from discord.ext.commands import Cog
 
@@ -14,7 +14,7 @@ class WarningPrompt(View):
 		ban_timestamp: int,
 		target_user: Member,
 		member_record: dict,
-		disabled_role: int,
+		disabled_role: Role,
 		guild_id: int,
 		reason: str
 	):
@@ -71,8 +71,7 @@ class WarningPrompt(View):
 			text = "Uwitz Federation",
 			icon_url = self.bot_object.user.display_avatar.url
 		)
-		disabled_role = self.bot_object.get_guild(self.guild_id).get_role(self.disabled_role)
-		await self.target_user.remove_roles(disabled_role, reason = f"Released by {interaction.user.name}")
+		await self.target_user.remove_roles(self.disabled_role, reason = f"Released by {interaction.user.name}")
 		await interaction.response.edit_message(embed = embed, view = self)
 
 class GlobalModeration(Cog):
@@ -100,6 +99,8 @@ class GlobalModeration(Cog):
 				return
 
 		else:
+			disabled_role = self.bot.get_guild(member.guild.id).get_role(guild_config.get("roles").get("disabled"))
+			await member.add_roles(disabled_role)
 			report_channel = self.bot.get_channel(guild_config.get("moderation").get("request_channel"))
 			report_embed = Embed(
 				description = f"This member has been banned Federation-wide for:\n```diff\n- {member_record.get('infractions').get('global_ban').get('reason')}```\nBanned at: <t:{member_record.get("infractions").get('global_ban').get('timestamp')}:d> (<t:{member_record.get('global_ban').get('timestamp')}:T>)",
@@ -117,7 +118,7 @@ class GlobalModeration(Cog):
 					ban_timestamp = member_record.get("infractions").get("global_ban").get("reason"),
 					target_user = member,
 					record = member_record,
-					disabled_role = guild_config.get("roles").get("disabled"),
+					disabled_role = disabled_role,
 					guild_id = member.guild.id,
 					reason = member_record.get("infractions").get("global_ban").get("reason")
 				)
