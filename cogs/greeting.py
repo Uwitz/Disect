@@ -23,7 +23,7 @@ class Greeting(Cog):
             }
         )
 
-        if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and not member_record.get("bypass").get(f"{member.guild.id}"):
+        if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and member.id not in server_config.get("bypass"):
             while member.pending:
                 asyncio.sleep(0.5)
                 continue
