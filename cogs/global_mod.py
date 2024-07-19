@@ -3,12 +3,14 @@ import os
 from discord import Member
 from discord.ext.commands import Bot, Cog
 
-from discord import Button, ButtonStyle, Embed, Interaction, Member, TextChannel
+from discord import Button, ButtonStyle, Embed, Interaction, Member
 from discord.ui import View, button
 from discord.ext.commands import Cog
 
 class WarningPrompt(View):
-	def __init__(self, target_user: Member, member_record: dict, reason: str):
+	def __init__(self, bot_object: Bot, ban_timestamp: int, target_user: Member, member_record: dict, reason: str):
+		self.bot_object = bot_object
+		self.ban_timestamp = ban_timestamp
 		self.target_user = target_user
 		self.member_record = member_record
 		self.reason = reason
@@ -50,8 +52,15 @@ class WarningPrompt(View):
 		label = "Release",
 		style = ButtonStyle.grey
 	)
-		...
 	async def cancel(self, interaction: Interaction, button: Button):
+		button.disabled = True
+		embed = Embed(
+			description = f"This member has been released regardless of the Federation-wide regarding:\n```diff\n- {self.reason}```\nBanned at: <t:{self.ban_timestamp}:d> (<t:{self.ban_timestamp}:T>)"
+		).set_footer(
+			text = "Uwitz Federation",
+			icon_url = self.bot_object.user.display_avatar.url
+		)
+		await interaction.response.edit_message(embed = embed, view = self)
 
 class GlobalModeration(Cog):
 	def __init__(self, bot: Bot):
