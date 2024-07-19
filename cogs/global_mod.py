@@ -80,12 +80,19 @@ class GlobalModeration(Cog):
 		else:
 			report_channel = self.bot.get_channel(guild_config.get("moderation").get("request_channel"))
 			report_embed = Embed(
-				description = f"This member has been banned Federation-wide for:\n```diff\n-{member_record.get('infractions').get('global_ban_reason')}",
+				description = f"This member has been banned Federation-wide for:\n```diff\n- {member_record.get('infractions').get('global_ban').get('reason')}```\nBanned at: <t:{member_record.get("infractions").get('global_ban').get('timestamp')}:d> (<t:{member_record.get('global_ban').get('timestamp')}:T>)",
 				colour = 0x2B2D31
+			).set_author(
+				name = "Banned user joined",
+				icon_url = "https://cdn-icons-png.flaticon.com/512/4201/4201973.png"
+			).set_footer(
+				text = f"Uwitz Federation",
+				icon_url = self.bot.user.display_avatar.url
 			)
 			return await report_channel.send(
 				embed = report_embed,
 				view = WarningPrompt(
+					ban_timestamp = member_record.get("infractions").get("global_ban").get("reason"),
 					target_user = member,
 					record = member_record,
 					reason = member_record.get("infractions").get("global_ban").get("reason")
