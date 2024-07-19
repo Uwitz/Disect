@@ -1,0 +1,69 @@
+{
+    "member_schema": {
+        "_id": 1192520668613451906,
+        "infractions": {
+            "global_ban": {
+                "state": false,
+                "reason": null,
+                "timestamp": 0
+            },
+            "guild_warnings": [
+                {
+                    "id": "bAR51MswA",
+                    "guild": 1192885150183329852,
+                    "moderator": {
+                        "id": 1192520668613451906,
+                        "name": "snyco.dev",
+                        "reason": "example"
+                    },
+                    "timestamp": 1704476383
+                }
+            ],
+            "guild_bans": [
+                {
+                    "id": "Lc95DscEa",
+                    "guild": 1192885150183329852,
+                    "moderator": {
+                        "id": 1192520668613451906,
+                        "name": "snyco.dev"
+                    },
+                    "reason": "also an example",
+                    "active": false,
+                    "timestamp": 1704476383
+                }
+            ],
+            "disabled_guilds": [
+                {
+                    "id": "8jAmr7Klw",
+                    "guild": 1192885150183329852,
+                    "moderator": {
+                        "id": 1192520668613451906,
+                        "name": "snyco.dev"
+                    },
+                    "reason": "yet another example",
+                    "active": false,
+                    "timestamp": 1704476383
+                }
+            ]
+        }
+    },
+    "guild_schema": {
+        "_id": 1192885150183329852,
+        "premium": true,
+        "roles": {
+            "disabled": 1199899637952290816,
+            "member": 1192886880023347310,
+            "administrators": [
+                1192886465869402182,
+                1230932595148066866
+            ],
+            "moderators": [
+                1192886374177714216
+            ]
+        },
+        "moderation": {
+            "auto_ban": true
+        },
+        "join_greeting": true
+    }
+}
