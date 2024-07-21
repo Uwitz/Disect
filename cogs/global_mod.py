@@ -103,7 +103,7 @@ class GlobalModeration(Cog):
 			await member.add_roles(disabled_role)
 			report_channel = self.bot.get_channel(guild_config.get("moderation").get("request_channel"))
 			report_embed = Embed(
-				description = f"This member has been banned Federation-wide for:\n```diff\n- {member_record.get('infractions').get('global_ban').get('reason')}```\nBanned at: <t:{member_record.get("infractions").get('global_ban').get('timestamp')}:d> (<t:{member_record.get('global_ban').get('timestamp')}:T>)",
+				description = f"This member has been banned Federation-wide for:\n```diff\n- {member_record.get('infractions').get('global_ban').get('reason')}```\nBanned at: <t:{member_record.get('infractions').get('global_ban').get('timestamp')}:d> (<t:{member_record.get('global_ban').get('timestamp')}:T>)",
 				colour = 0x2B2D31
 			).set_author(
 				name = "Banned user joined",
