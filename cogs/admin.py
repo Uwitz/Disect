@@ -54,7 +54,7 @@ class Admin(Cog):
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv("EMOJI_FAIL")} Unable to load `cogs.{extension}`\n```python\n{error}\n```",
+				f"{os.getenv('EMOJI_FAIL')} Unable to load `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
@@ -70,7 +70,7 @@ class Admin(Cog):
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv("EMOJI_FAIL")} Unable to unload `cogs.{extension}`\n```python\n{error}\n```",
+				f"{os.getenv('EMOJI_FAIL')} Unable to unload `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
@@ -84,7 +84,7 @@ class Admin(Cog):
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv("EMOJI_FAIL")} Unable to reload `cogs.{extension}`\n```python\n{error}\n```",
+				f"{os.getenv('EMOJI_FAIL')} Unable to reload `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
