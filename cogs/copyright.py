@@ -39,3 +39,6 @@ class Copyright(Cog):
                 )
             )
         )
+
+async def setup(bot: Bot):
+    await bot.add_cog(Copyright(bot))
