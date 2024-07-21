@@ -62,7 +62,7 @@ class Admin(Cog):
 	@autocomplete(extension = loaded_extension_list)
 	async def unload(self, interaction: Interaction, extension: str):
 		if extension == "admin":
-			return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} Unloading `cogs.{extension}` is disallowed")
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} Unloading `cogs.{extension}` is disallowed")
 		try:
 			await self.bot.unload_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
