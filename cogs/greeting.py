@@ -67,12 +67,12 @@ class Greeting(Cog):
                     ).set_author(
                         name = random.choice(
                             [
-                                f"{member.name.capitalize()} Joined!",
-                                f"Welcome {member.name.capitalize()}!",
-                                f"{member.name.capitalize()} Entered!",
-                                f"{member.name.capitalize()} Landed",
-                                f"{member.name.capitalize()} crossed the border",
-                                f"Welcome onboard {member.name.capitalize()}!"
+                                f"{member.display_name} Joined!",
+                                f"Welcome {member.display_name}!",
+                                f"{member.display_name} Entered!",
+                                f"{member.display_name} Landed",
+                                f"{member.display_name} crossed the border",
+                                f"Welcome onboard {member.display_name}!"
                             ]
                         ),
                         icon_url = member.display_avatar.url
