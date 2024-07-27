@@ -14,6 +14,7 @@ class System(Bot):
 	def __init__(self):
 		self.loaded_extension_list = []
 		self.unloaded_extension_list = []
+		self.internal_error_occured = False
 		intents = Intents.all()
 		super().__init__(intents = intents, command_prefix = "/")
 
