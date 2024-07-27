@@ -54,7 +54,7 @@ class Sync(Cog):
                             username = f"{message.author.display_name} ({message.guild.name})",
                             avatar_url = message.author.display_avatar.url,
                             content = message_content,
-                            files = message.attachments,
+                            # files = message.attachments,
                             allowed_mentions = False,
                             wait = True
                         )
