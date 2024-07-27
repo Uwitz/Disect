@@ -17,13 +17,13 @@ class Sync(Cog):
     @Cog.listener("on_message")
     async def message_sync(self, message: Message):
         if message.author.bot: return
-        current_guild_config = await self.bot.chatsync["config"].find_one(
+        current_guild_config = await self.bot.chatsync_db["config"].find_one(
             {
                 "_id": message.guild.id
             }
         )
         if current_guild_config.get("linked") and message.channel.id == current_guild_config.get("sync_channel"):
-            guild_config_list: List[dict] = self.bot.chatsync["config"].find(
+            guild_config_list: List[dict] = self.bot.chatsync_db["config"].find(
                 {
                     "linked": True
                 }
@@ -60,23 +60,23 @@ class Sync(Cog):
                         )
                         message_data["guild_messages"][f"{guild.get('_id')}"] = webhook_message.id
 
-            await self.bot.chatsync["messages"].insert_one(message_data)
+            await self.bot.chatsync_db["messages"].insert_one(message_data)
 
     @Cog.listener("on_message_edit")
     async def edit_sync(self, message_before: Message, message_after: Message):
         if message_after.author.bot: return
-        current_guild_config = await self.bot.chatsync["config"].find_one(
+        current_guild_config = await self.bot.chatsync_db["config"].find_one(
             {
                 "_id": message_after.guild.id
             }
         )
         if current_guild_config.get("linked") and message_after.channel.id == current_guild_config.get("sync_channel"):
-            guild_config_list: List[dict] = self.bot.chatsync["config"].find(
+            guild_config_list: List[dict] = self.bot.chatsync_db["config"].find(
                 {
                     "linked": True
                 }
             )
-            original_message = await self.bot.chatsync["messages"].find_one(
+            original_message = await self.bot.chatsync_db["messages"].find_one(
                 {
                     "_id": message_after.id
                 }
@@ -90,7 +90,7 @@ class Sync(Cog):
                         session = session
                     )
                     await webhook.edit_message(guild_messages[f"{guild.get("_id")}"], content = message_after.content)
-            await self.bot.chatsync["messages"].update_one(
+            await self.bot.chatsync_db["messages"].update_one(
                 {
                     "_id": message_after.id
                 },
