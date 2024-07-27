@@ -38,8 +38,14 @@ class System(Bot):
 				tls = True,
 				tlsCertificateKeyFile = "mongo_cert.pem"
 			)["disect"]
+			self.chatsync_db = AsyncIOMotorClient(
+				os.getenv("MONGO"),
+				tls = True,
+				tlsCertificateKeyFile = "mongo_cert.pem"
+			)["channelsync"]
 		else:
 			self.database = AsyncIOMotorClient(os.getenv("MONGO"))["disect"]
+			self.chatsync_db = AsyncIOMotorClient(os.getenv("MONGO"))["channelsync"]
 
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
