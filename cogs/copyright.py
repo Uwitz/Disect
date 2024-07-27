@@ -18,10 +18,10 @@ class Copyright(Cog):
             colour = 0x2B2D31
         ).set_author(
             name = "Copyright Notice",
-            icon_url = "http://cdn.uwitz.org/r/justice.png"
+            icon_url = "https://cdn.uwitz.org/r/justice.png"
         ).set_footer(
             text = "Uwitz Federation",
-            icon_url = "http://cdn.uwitz.org/r/shield-logo.png"
+            icon_url = "https://cdn.uwitz.org/r/shield-logo.png"
         )
         await interaction.response.send_message(
             embed = embed,
