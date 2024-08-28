@@ -99,33 +99,20 @@ class Admin(Cog):
 			] if extension not in self.bot.loaded_extension_list
 		]
 		unloaded_extensions = ["null"] if len(unloaded_extensions) == 0 else unloaded_extensions
+
 		ping = round(self.bot.latency * 1000)
 		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else "degraded"
+		status = "critical-health" if self.internal_error_occured else ("degraded-health" if len(unloaded_extensions) > 0 or ping >= 125 else "good-health")
+		ping_emoji = os.getenv('EMOJI_GOODPING') if ping <= 50 else (os.getenv('EMOJI_MODERATEPING') if ping <= 125 else os.getenv('EMOJI_BADPING'))
+		
 		embed = Embed(
 			description = f"Running `v{self.bot.version}` with `{efficiency_description}` performance",
 			colour = 0x2B2D31
-		)
-
-		if ping <= 50:
-			embed.add_field(
-				name = "> Ping",
-				value = f"{os.getenv('EMOJI_GOODPING')} {ping}ms",
-				inline = False
-			)
-		elif ping <= 125:
-			embed.add_field(
-				name = "> Ping",
-				value = f"{os.getenv('EMOJI_MODERATEPING')} {ping}ms",
-				inline = False
-			)
-		else:
-			embed.add_field(
-				name = "> Ping",
-				value = f"{os.getenv('EMOJI_BADPING')} {ping}ms",
-				inline = False
-			)
-
-		embed.add_field(
+		).add_field(
+			name = "> Ping",
+			value = f"{ping_emoji} `{ping}ms`",
+			inline = False
+		).add_field(
 			name = "> Loaded",
 			value = f"```diff\n+ {'\n+ '.join(self.bot.loaded_extension_list)}\n```",
 			inline = True
@@ -133,25 +120,10 @@ class Admin(Cog):
 			name = "> Unloaded",
 			value = f"```diff\n- {'\n- '.join(unloaded_extensions)}\n```",
 			inline = True
+		).set_author(
+			name = "Health Status",
+			icon_url = f"https://cdn.uwitz.org/r/{status}.png"
 		)
-
-		if len(unloaded_extensions) > 0 or ping >= 125:
-			embed.set_author(
-				name = "Health Status",
-				icon_url = "https://cdn.uwitz.org/r/degraded-health.png"
-			)
-
-		elif self.bot.internal_error_occured:
-			embed.set_author(
-				name = "Health Status",
-				icon_url = "https://cdn.uwitz.org/r/critical-health.png"
-			)
-
-		else:
-			embed.set_author(
-				name = "Health Status",
-				icon_url = "https://cdn.uwitz.org/r/good-health.png"
-			)
 
 		await interaction.response.send_message(embed = embed, ephemeral = True)
 
