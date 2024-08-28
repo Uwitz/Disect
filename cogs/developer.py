@@ -6,7 +6,7 @@ from discord import Embed, Interaction, Object
 from discord.app_commands import Choice, Group, autocomplete, command
 from discord.ext.commands import Bot, Cog
 
-class Admin(Cog):
+class Developer(Cog):
 	def __init__(self, bot: Bot):
 		self.bot = bot
 
@@ -44,9 +44,9 @@ class Admin(Cog):
 
 	cog = Group(name="cog", description = "Group of commands to manage cogs.")
 
-	@cog.command(name = "load", description = "Load a cog.")
+	@cog.command(name = "enable", description = "Load a cog to the bot's runtime")
 	@autocomplete(extension = unloaded_extension_list)
-	async def load(self, interaction: Interaction, extension: str):
+	async def enable(self, interaction: Interaction, extension: str):
 		try:
 			await self.bot.load_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
@@ -58,10 +58,10 @@ class Admin(Cog):
 				ephemeral = True
 			)
 
-	@cog.command(name = "unload", description = "Unload a cog.")
+	@cog.command(name = "disable", description = "Unload a cog from the bot's runtime")
 	@autocomplete(extension = loaded_extension_list)
-	async def unload(self, interaction: Interaction, extension: str):
-		if extension == "admin":
+	async def disable(self, interaction: Interaction, extension: str):
+		if extension == "developer":
 			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} Unloading `cogs.{extension}` is disallowed")
 		try:
 			await self.bot.unload_extension(f"cogs.{extension}")
@@ -75,9 +75,9 @@ class Admin(Cog):
 				ephemeral = True
 			)
 
-	@cog.command(name = "reload", description = "Reload a cog.")
+	@cog.command(name = "restart", description = "Unload a cog from bots runtime to load updated code")
 	@autocomplete(extension = loaded_extension_list)
-	async def reload(self, interaction: Interaction, extension: str):
+	async def restart(self, interaction: Interaction, extension: str):
 		try:
 			await self.bot.reload_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
@@ -102,7 +102,7 @@ class Admin(Cog):
 
 		ping = round(self.bot.latency * 1000)
 		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else "degraded"
-		status = "critical-health" if self.internal_error_occured else ("degraded-health" if len(unloaded_extensions) > 0 or ping >= 125 else "good-health")
+		status = "critical-health" if self.bot.internal_error_occured else ("degraded-health" if len(unloaded_extensions) > 0 or ping >= 125 else "good-health")
 		ping_emoji = os.getenv('EMOJI_GOODPING') if ping <= 50 else (os.getenv('EMOJI_MODERATEPING') if ping <= 125 else os.getenv('EMOJI_BADPING'))
 		
 		embed = Embed(
@@ -111,11 +111,15 @@ class Admin(Cog):
 		).add_field(
 			name = "> Ping",
 			value = f"{ping_emoji} `{ping}ms`",
-			inline = False
+			inline = True
+		).add_field(
+			name = "> Servers",
+			value = f"`{len(self.bot.guilds)}` *(`{len(self.bot.users)}` members)*",
+			inline = True
 		).add_field(
 			name = "> Loaded",
 			value = f"```diff\n+ {'\n+ '.join(self.bot.loaded_extension_list)}\n```",
-			inline = True
+			inline = False
 		).add_field(
 			name = "> Unloaded",
 			value = f"```diff\n- {'\n- '.join(unloaded_extensions)}\n```",
@@ -125,7 +129,7 @@ class Admin(Cog):
 			icon_url = f"https://cdn.uwitz.org/r/{status}.png"
 		)
 
-		await interaction.response.send_message(embed = embed, ephemeral = True)
+		await interaction.response.send_message(embed = embed)
 
 async def setup(bot: Bot):
-	await bot.add_cog(Admin(bot), guild = Object(os.getenv("GUILD")))
+	await bot.add_cog(Developer(bot), guild = Object(os.getenv("GUILD")))
