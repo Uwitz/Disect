@@ -3,7 +3,7 @@ import os
 from typing import List
 
 from discord import Embed, Interaction, Object
-from discord.app_commands import Choice, Group, autocomplete
+from discord.app_commands import Choice, Group, autocomplete, command
 from discord.ext.commands import Bot, Cog
 
 class Admin(Cog):
@@ -89,7 +89,7 @@ class Admin(Cog):
 				ephemeral = True
 			)
 
-	@cog.command(name = "health", description = "Check the bot's developer information.")
+	@command(name = "health", description = "Check the bot's developer information.")
 	async def health(self, interaction: Interaction):
 		unloaded_extensions = [
 			extension
