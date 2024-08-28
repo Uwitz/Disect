@@ -102,7 +102,7 @@ class Admin(Cog):
 		ping = round(self.bot.latency * 1000)
 		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else "degraded"
 		embed = Embed(
-			description = f"Discord Bot online and functional with {efficiency_description} performance.",
+			description = f"Running `v{self.bot.version}` with `{efficiency_description}` performance",
 			colour = 0x2B2D31
 		)
 

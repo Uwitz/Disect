@@ -12,6 +12,7 @@ from encryption import Encryption
 
 class System(Bot):
 	def __init__(self):
+		self.version = "0.0.1a"
 		self.loaded_extension_list = []
 		self.unloaded_extension_list = []
 		self.internal_error_occured = False
