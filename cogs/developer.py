@@ -101,7 +101,7 @@ class Developer(Cog):
 		unloaded_extensions = ["null"] if len(unloaded_extensions) == 0 else unloaded_extensions
 
 		ping = round(self.bot.latency * 1000)
-		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else "degraded"
+		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else ("critical" if self.bot.internal_error_occured else "degraded")
 		status = "critical-health" if self.bot.internal_error_occured else ("degraded-health" if len(unloaded_extensions) > 0 or ping >= 125 else "good-health")
 		ping_emoji = os.getenv('EMOJI_GOODPING') if ping <= 50 else (os.getenv('EMOJI_MODERATEPING') if ping <= 125 else os.getenv('EMOJI_BADPING'))
 		
