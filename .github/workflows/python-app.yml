@@ -15,9 +15,7 @@ permissions:
 jobs:
   build:
 
-    runs-on:
-      - ubuntu-latest
-      - prod
+    runs-on: prod
 
     steps:
     - uses: actions/checkout@v4
@@ -39,3 +37,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+    - name: Run Bot
+      run: |
+        python3 ./index.py
