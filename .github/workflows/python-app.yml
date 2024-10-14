@@ -15,14 +15,12 @@ permissions:
 jobs:
   build:
 
-    runs-on:
-      - ubuntu-latest
-      - dev
+    runs-on: dev
 
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: "3.12 - 3.13"
         allow-prereleases: true
