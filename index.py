@@ -33,22 +33,18 @@ class System(Bot):
 			self.encryption.load_credentials()
 		except FileNotFoundError:
 			self.encryption.generate_credentials()
-
-		if os.getenv("MONGO_TLS") == "True":
-			self.database = AsyncIOMotorClient(
-				os.getenv("MONGO"),
-				tls = True,
-				tlsCertificateKeyFile = "mongo_cert.pem"
-			)["disect"]
-			self.chatsync_db = AsyncIOMotorClient(
-				os.getenv("MONGO"),
-				tls = True,
-				tlsCertificateKeyFile = "mongo_cert.pem"
-			)["channelsync"]
-		else:
-			self.database = AsyncIOMotorClient(os.getenv("MONGO"))["disect"]
-			self.chatsync_db = AsyncIOMotorClient(os.getenv("MONGO"))["channelsync"]
-
+		
+		self.database = AsyncIOMotorClient(
+			os.getenv("MONGO"),
+			tls = True,
+			tlsCertificateKeyFile = "mongo_cert.pem"
+		)["disect"]
+		self.chatsync_db = AsyncIOMotorClient(
+			os.getenv("MONGO"),
+			tls = True,
+			tlsCertificateKeyFile = "mongo_cert.pem"
+		)["channelsync"]
+		
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
 				try:
