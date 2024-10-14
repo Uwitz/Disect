@@ -15,7 +15,9 @@ permissions:
 jobs:
   build:
 
-    runs-on: dev
+    runs-on:
+      - ubuntu-latest
+      - dev
 
     steps:
     - uses: actions/checkout@v4
