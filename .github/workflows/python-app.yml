@@ -18,6 +18,17 @@ jobs:
     runs-on: dev
 
     steps:
+    - shell: zsh
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        MONGO: ${{ secrets.MONGO }}
+        EMOJI_BADPING: ${{ vars.EMOJI_BADPING }}
+        EMOJI_GOODPING: ${{ vars.EMOJI_GOODPING }}
+        EMOJI_MODERATEPING: ${{ vars.EMOJI_MODERATEPING }}
+        EMOJI_SUCCESS: ${{ vars.EMOJI_SUCCESS }}
+        GUILD: ${{ vars.GUILD }}
+        OWNER_ID: ${{ vars.OWNER_ID }}
+
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
       uses: actions/setup-python@v3
