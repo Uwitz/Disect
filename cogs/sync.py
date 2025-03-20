@@ -89,7 +89,7 @@ class Sync(Cog):
                         guild.get("sync_webhook"),
                         session = session
                     )
-                    await webhook.edit_message(guild_messages[f"{guild.get("_id")}"], content = message_after.content)
+                    await webhook.edit_message(guild_messages[f"{guild.get('_id')}"], content = message_after.content)
             await self.bot.chatsync_db["messages"].update_one(
                 {
                     "_id": message_after.id
