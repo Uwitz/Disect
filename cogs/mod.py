@@ -118,6 +118,74 @@ class Mod(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
+	# @command(
+	# 	name = "ban",
+	# 	description = "Banish a member with a valid reason.",
+	# )
+	# @describe(member = "The member you'd like banned.")
+	# @describe(reason = "Why should the member be banned?")
+	# async def ban(self, interaction: Interaction, member: Member, reason: str):
+	# 	guild_config = await self.bot.database["config"].find_one(
+	# 		{
+	# 			"_id": interaction.guild.id
+	# 		}
+	# 	)
+	# 	report_channel = self.bot.get_channel(os.getenv("ENFORCEMENT"))
+	# 	if interaction.user.id in 
+
+		# report_channel = self.bot.get_channel(os.getenv("ENFORCEMENT"))
+		# if not interaction.user.id == int(os.getenv("OWNER_ID")):
+		# 	guild_config = await self.bot.database["config"].find_one(
+		# 		{
+		# 			"_id": interaction.guild.id
+		# 		}
+		# 	)
+		# 	for role in guild_config.get("ADMINISTRATOR_ROLES"):
+		# 		if (interaction.guild.get_role(role) in interaction.user.roles) or (interaction.user.guild_permissions.administrator):
+		# 			if interaction.user.guild_permissions.administrator or (
+		# 				(os.getenv("ADMINISTRATOR_ROLE"), os.getenv("MODERATOR_ROLE")) in [role.id for role in interaction.user.roles]
+		# 			):
+		# 				await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
+		# 				break
+		# 			report = Embed(
+		# 				description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
+		# 				timestamp = datetime.now(),
+		# 				color = 0xFF7A7A
+		# 			).set_author(
+		# 				name = member.display_name,
+		# 				icon_url = member.display_avatar.url
+		# 			)
+
+		# 			try:
+		# 				await member.ban(
+		# 					reason = reason,
+		# 					delete_message_seconds = 60
+		# 				)
+		# 			except:
+		# 				return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} The Royal Defence is not authorised to ban this user.")
+
+		# 			await report_channel.send(embed = report)
+		# 			return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Sudo Banished User.", ephemeral = True)
+
+		# 		confirmation_embed = Embed(
+		# 			description = f"Would you like to confirm that you want to send a ban report about <@!{member.id}> for:\n```diff\n- {reason}\n```",
+		# 			timestamp = datetime.now(),
+		# 			colour = 0xFF7A7A
+		# 		).set_author(
+		# 			name = member.display_name,
+		# 			icon_url = member.display_avatar.url
+		# 		)
+
+		# 		await interaction.response.send_message(
+		# 			embed = confirmation_embed,
+		# 			view = Prompt(
+		# 				target_user = member,
+		# 				reason = reason,
+		# 				report_channel = report_channel
+		# 			)
+		# 		)
+		# 		break
+
 	@command(
 		name = "mute",
 		description = "Mute a member with a valid reason."
