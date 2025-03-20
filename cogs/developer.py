@@ -118,11 +118,11 @@ class Developer(Cog):
 			inline = True
 		).add_field(
 			name = "> Loaded",
-			value = f"```diff\n+ {'\n+ '.join(self.bot.loaded_extension_list)}\n```",
+			value = "```diff\n" + "\n".join(f"+ {ext}" for ext in self.bot.loaded_extension_list) + "\n```",
 			inline = False
 		).add_field(
 			name = "> Unloaded",
-			value = f"```diff\n- {'\n- '.join(unloaded_extensions)}\n```",
+			value = "```diff\n" + "\n".join(f"- {ext}" for ext in unloaded_extensions) + "\n```",
 			inline = True
 		).set_author(
 			name = "Health Status",
