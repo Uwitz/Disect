@@ -28,8 +28,8 @@ class Mod(Cog):
 		if not guild_config:
 			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} This server has not been configured yet. Please ask an administrator to run the `/setup` command.", ephemeral = True)
 		
-		report_channel: TextChannel = interaction.guild.get_channel(guild_config.get("CHANNELS").get("MODERATION_LOG"))
-		roles = guild_config.get("ADMINISTRATOR_ROLES").extend(guild_config.get("MODERATOR_ROLES"))
+		report_channel: TextChannel = interaction.guild.get_channel(guild_config.get("channels").get("moderation_log"))
+		roles = guild_config.get("roles").get("administrators").extend(guild_config.get("roles").get("moderators"))
 		if ([role.id for role in member.roles] in roles) or (interaction.user.guild_permissions.administrator):
 			await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
 			report = Embed(
