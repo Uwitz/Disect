@@ -1,7 +1,6 @@
 import re
 
-from discord import Message, WebhookMessage
-from discord import Webhook
+from discord import Message, Webhook, WebhookMessage
 from discord.ext.commands import Cog
 
 from typing import List
@@ -54,7 +53,7 @@ class Sync(Cog):
                             username = f"{message.author.display_name} ({message.guild.name})",
                             avatar_url = message.author.display_avatar.url,
                             content = message_content,
-                            # files = message.attachments,
+                            # files = message.attachments, # TODO: Fix attachments support
                             allowed_mentions = False,
                             wait = True
                         )
