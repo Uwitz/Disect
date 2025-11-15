@@ -12,18 +12,17 @@ class Greeting(Cog):
 
     @Cog.listener("on_member_join")
     async def onboard_completion(self, member: Member):
-        member_record: dict | None = await self.bot.database["members"].find_one(
-            {
-                "_id": member.id
-            }
-        )
+        await asyncio.sleep(1)
+
         server_config: dict | None = await self.bot.database["config"].find_one(
             {
                 "_id": member.guild.id
             }
         )
+        if member.guild.get_role(server_config.get("roles").get("disabled")) in member.roles:
+            return
 
-        if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and member.id not in server_config.get("bypass"):
+        if (int(member.created_at.timestamp()) > int(datetime.now().timestamp()) - 2592000) and member.id not in server_config.get("bypass") and server_config.get("block_new_accounts"):
             while member.pending:
                 asyncio.sleep(0.5)
                 continue
@@ -48,6 +47,16 @@ class Greeting(Cog):
                 icon_url = member.guild.icon.url
             )
             await member.send(embed = embed)
+
+            blocked_embed = Embed(
+                description = "Account is too recent",
+                colour = 0x2B2D31,
+                timestamp = datetime.now().isoformat()
+            ).set_author(
+                name = "Account Disabled",
+                icon_url = "https://cdn.uwitz.org/r/red-hand.png"
+            )
+
             await member.add_roles(disabled_role, reason = "Disabled User from interacting with Server.")
 
         else:

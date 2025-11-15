@@ -14,6 +14,18 @@ class Encryption:
 
 	@classmethod
 	def load_credentials(cls):
+		"""
+		Loads the encryption credentials from the file ./resources/credentials.json
+		
+		The credentials should be a dictionary containing the following keys:
+			- key: The encryption key
+			- iv: The initialization vector
+
+		Raises
+		------
+		FileNotFoundError
+			If the credentials file does not exist
+		"""
 		if not os.path.isfile("./resources/credentials.json"):
 			raise FileNotFoundError("Encryption Credentials file not found.")
 
@@ -23,6 +35,16 @@ class Encryption:
 
 	@classmethod
 	def generate_credentials(cls):
+		"""
+		Generate a new key and initialization vector and write it to a
+		JSON file in the resources folder.
+
+		These values are used for the AES encryption of the MongoDB
+		credentials. If the credentials file does not exist, this method
+		will generate a new one and write it to the file.
+
+		:return: None
+		"""
 		cls.key = ''.join(
 			random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
 			for _ in range(16)
@@ -42,11 +64,29 @@ class Encryption:
 		)
 
 	def encrypt(self, data):
+		"""
+		Encrypts the given data using the stored key and initialization vector.
+
+		Args:
+			data (str): The data to be encrypted.
+
+		Returns:
+			str: The encrypted data, base64 encoded.
+		"""
 		data = pad(data.encode(),16)
 		cipher = AES.new(self.key.encode('utf-8'),AES.MODE_CBC, self.iv)
 		return base64.b64encode(cipher.encrypt(data))
 
 	def decrypt(self, encrypted_data):
+		"""
+		Decrypts the given encrypted data using the stored key and initialization vector.
+
+		Args:
+			encrypted_data (str): The encrypted data, base64 encoded.
+
+		Returns:
+			str: The original decrypted data.
+		"""
 		encrypted_data = base64.b64decode(encrypted_data)
 		cipher = AES.new(self.key.encode('utf-8'), AES.MODE_CBC, self.iv)
 		return unpad(cipher.decrypt(encrypted_data), 16)

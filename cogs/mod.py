@@ -2,189 +2,55 @@ import os
 import re
 
 from datetime import datetime, timedelta
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from discord import Button, ButtonStyle, Embed, Interaction, Member, TextChannel
-from discord.ui import View, button
+from discord import Embed, Interaction, Member, TextChannel
 from discord.app_commands import command, describe
 from discord.ext.commands import Cog
 
 from cogs.utils.checks import Checks
 
-class BanPrompt(View):
-	def __init__(self, target_user: Member, reason: str, original_embed: Embed):
-		self.target_user = target_user
-		self.reason = reason
-		self.original_embed = original_embed
-		super().__init__(timeout = None)
-
-	@button(
-		label = "Ban",
-		style = ButtonStyle.red
-	)
-	async def ban(self, button: Button, interaction: Interaction):
-		try:
-			await self.target_user.ban(
-				reason = self.reason,
-				delete_message_seconds = 60
-			)
-		except:
-			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} You are not authorised to this user.")
-		button.disabled = True
-		button.style = ButtonStyle.green
-		for button_ in self.children:
-			button_.disabled = True
-
-		await interaction.edit_original_response(
-			embed = self.original_embed.add_field(
-				name = "Authorised by:",
-				value = f"<@!{interaction.user.id}>"
-			),
-			view = self
-		)
-
-	@button(
-		label = "Cancel",
-		style = ButtonStyle.grey
-	)
-	async def cancel(self, button: Button, interaction: Interaction):
-		button.disabled = True
-		for button_ in self.children:
-			button.disabled = True
-			button_.style = ButtonStyle.grey
-
-		button.style = ButtonStyle.green
-		await self.target_user.timeout(until = None)
-		await interaction.edit_original_response(
-			embed = self.original_embed.add_field(
-				name = "Cancelled by:",
-				value = f"<@!{interaction.user.id}>"
-			),
-			view = self
-		)
-
-class Prompt(View):
-	def __init__(self, target_user: Member, report_channel: TextChannel, reason: str):
-		self.target_user = target_user
-		self.report_channel = report_channel
-		self.original_reason = reason
-		super().__init__(timeout = None)
-
-	@button(
-		label = "Confirm",
-		style = ButtonStyle.red
-	)
-	async def confirm(self, button: Button, interaction: Interaction):
-		duration = timedelta(days = 5)
-		await self.target_user.timeout(duration, reason = "Awaiting ban requestion completion.")
-		embed = Embed(
-			description = f"Report sent to enforcement regarding <@!{self.target_user.id}>:\n```diff\n - {self.original_reason}\n```",
-			timestamp = datetime.now(),
-			colour = 0xFF7A7A
-		).set_author(
-			name = self.target_user.display_name,
-			icon_url = self.target_user.display_avatar.url
-		)
-		await interaction.response.edit_message(embed = embed)
-
-		report_embed = Embed(
-			description = f"Ban report by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {self.reason}\n```",
-			timestamp = datetime.now(),
-			colour = 0xFF7A7A
-		).set_author(
-			name = self.target_user.display_name,
-			icon_url = self.target_user.display_avatar.url
-		)
-
-		await self.report_channel.send(
-			embed = report_embed,
-			view = BanPrompt(
-				target_user = self.target_user,
-				reason = self.reason,
-				original_embed = report_embed
-			)
-		)
-
-	@button(
-		label = "Cancel",
-		style = ButtonStyle.grey
-	)
-	async def cancel(self, button, interaction):
-		await interaction.response.edit_message(
-			content = f"{os.getenv('EMOJI_SUCCESS')} Cancelled Ban Request"
-		)
-
 class Mod(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	# @command(
-	# 	name = "ban",
-	# 	description = "Banish a member with a valid reason.",
-	# )
-	# @describe(member = "The member you'd like banned.")
-	# @describe(reason = "Why should the member be banned?")
-	# async def ban(self, interaction: Interaction, member: Member, reason: str):
-	# 	guild_config = await self.bot.database["config"].find_one(
-	# 		{
-	# 			"_id": interaction.guild.id
-	# 		}
-	# 	)
-	# 	report_channel = self.bot.get_channel(os.getenv("ENFORCEMENT"))
-	# 	if interaction.user.id in 
+	@command(
+		name = "ban",
+		description = "Bans a member with a valid reason.",
+	)
+	@describe(member = "The member you'd like banned.")
+	@describe(reason = "Why should the member be banned?")
+	async def ban(self, interaction: Interaction, member: Member, reason: str):
+		guild_config = await self.bot.database["config"].find_one(
+			{
+				"_id": interaction.guild.id
+			}
+		)
+		if not guild_config:
+			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} This server has not been configured yet. Please ask an administrator to run the `/setup` command.", ephemeral = True)
+		
+		report_channel: TextChannel = interaction.guild.get_channel(guild_config.get("channels").get("moderation_log"))
+		roles = guild_config.get("roles").get("administrators").extend(guild_config.get("roles").get("moderators"))
+		if ([role.id for role in member.roles] in roles) or (interaction.user.guild_permissions.administrator):
+			await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
+			report = Embed(
+				description = f"Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
+				timestamp = datetime.now(),
+				color = 0xFF7A7A
+			).set_author(
+				name = member.display_name,
+				icon_url = member.display_avatar.url
+			)
 
-		# report_channel = self.bot.get_channel(os.getenv("ENFORCEMENT"))
-		# if not interaction.user.id == int(os.getenv("OWNER_ID")):
-		# 	guild_config = await self.bot.database["config"].find_one(
-		# 		{
-		# 			"_id": interaction.guild.id
-		# 		}
-		# 	)
-		# 	for role in guild_config.get("ADMINISTRATOR_ROLES"):
-		# 		if (interaction.guild.get_role(role) in interaction.user.roles) or (interaction.user.guild_permissions.administrator):
-		# 			if interaction.user.guild_permissions.administrator or (
-		# 				(os.getenv("ADMINISTRATOR_ROLE"), os.getenv("MODERATOR_ROLE")) in [role.id for role in interaction.user.roles]
-		# 			):
-		# 				await interaction.response.send(f"{os.getenv("EMOJI_FAIL")} You are not authorised to moderate another person in authority.")
-		# 				break
-		# 			report = Embed(
-		# 				description = f"Sudo Banned by <@!{interaction.user.id}>\n\n**Reason:**\n```diff\n - {reason}```",
-		# 				timestamp = datetime.now(),
-		# 				color = 0xFF7A7A
-		# 			).set_author(
-		# 				name = member.display_name,
-		# 				icon_url = member.display_avatar.url
-		# 			)
+			try:
+				await member.ban(
+					reason = reason,
+					delete_message_seconds = 60
+				)
+			except:
+				return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} I am not authorised to ban this user.")
 
-		# 			try:
-		# 				await member.ban(
-		# 					reason = reason,
-		# 					delete_message_seconds = 60
-		# 				)
-		# 			except:
-		# 				return await interaction.response.send_message(f"{os.getenv("EMOJI_FAIL")} The Royal Defence is not authorised to ban this user.")
-
-		# 			await report_channel.send(embed = report)
-		# 			return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Sudo Banished User.", ephemeral = True)
-
-		# 		confirmation_embed = Embed(
-		# 			description = f"Would you like to confirm that you want to send a ban report about <@!{member.id}> for:\n```diff\n- {reason}\n```",
-		# 			timestamp = datetime.now(),
-		# 			colour = 0xFF7A7A
-		# 		).set_author(
-		# 			name = member.display_name,
-		# 			icon_url = member.display_avatar.url
-		# 		)
-
-		# 		await interaction.response.send_message(
-		# 			embed = confirmation_embed,
-		# 			view = Prompt(
-		# 				target_user = member,
-		# 				reason = reason,
-		# 				report_channel = report_channel
-		# 			)
-		# 		)
-		# 		break
+			await report_channel.send(embed = report)
+			return await interaction.response.send_message(f"{os.getenv("EMOJI_SUCCESS")} Successfully Sudo Banished User.", ephemeral = True)
 
 	@command(
 		name = "mute",

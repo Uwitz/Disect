@@ -10,7 +10,7 @@ from discord.ext.commands import Bot
 
 from encryption import Encryption
 
-class System(Bot):
+class Client(Bot):
 	def __init__(self):
 		self.version = "0.0.1a"
 		self.loaded_extension_list = []
@@ -54,10 +54,10 @@ class System(Bot):
 				except Exception as error:
 					self.unloaded_extension_list.append(file[:-3])
 					traceback.print_exc(error)
+					continue
 
 		self.loop.create_task(self.sync_commands())
 
 if __name__ == "__main__":
 	load_dotenv(find_dotenv())
-	bot = System()
-	bot.run(os.getenv("TOKEN"))
+	Client().run(os.getenv("TOKEN"))
