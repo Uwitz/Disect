@@ -1,4 +1,0 @@
-discord.py
-motor
-python-dotenv
-pycryptodome
