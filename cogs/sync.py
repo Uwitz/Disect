@@ -15,7 +15,8 @@ class Sync(Cog):
 
     @Cog.listener("on_message")
     async def message_sync(self, message: Message):
-        if message.author.bot: return
+        if message.author.bot:
+            return
         current_guild_config = await self.bot.chatsync_db["config"].find_one(
             {
                 "_id": message.guild.id
@@ -63,7 +64,8 @@ class Sync(Cog):
 
     @Cog.listener("on_message_edit")
     async def edit_sync(self, message_before: Message, message_after: Message):
-        if message_after.author.bot: return
+        if message_after.author.bot:
+            return
         current_guild_config = await self.bot.chatsync_db["config"].find_one(
             {
                 "_id": message_after.guild.id
@@ -83,7 +85,8 @@ class Sync(Cog):
             guild_messages = original_message.get("guild_messages")
             async with ClientSession() as session:
                 async for guild in guild_config_list:
-                    if guild.get("_id") == message_after.guild.id: continue
+                    if guild.get("_id") == message_after.guild.id:
+                        continue
                     webhook = Webhook.from_url(
                         guild.get("sync_webhook"),
                         session = session

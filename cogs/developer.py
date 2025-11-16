@@ -106,7 +106,7 @@ class Developer(Cog):
 		ping_emoji = os.getenv('EMOJI_GOODPING') if ping <= 50 else (os.getenv('EMOJI_MODERATEPING') if ping <= 125 else os.getenv('EMOJI_BADPING'))
 		
 		embed = Embed(
-			description = f"Running `v{self.bot.version}` with `{efficiency_description}` performance",
+			description = f"Running build `{self.bot.build}` with `{efficiency_description}` performance",
 			colour = 0x2B2D31
 		).add_field(
 			name = "> Ping",
