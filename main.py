@@ -1,4 +1,5 @@
 import os
+import json
 import traceback
 
 from dotenv import find_dotenv, load_dotenv
@@ -12,7 +13,9 @@ from encryption import Encryption
 
 class Client(Bot):
 	def __init__(self):
-		self.version = "0.0.1a"
+		with open("metadata.json") as metadata_file:
+			self.metadata = json.load(metadata_file)
+		self.build = self.metadata.get("build")
 		self.loaded_extension_list = []
 		self.unloaded_extension_list = []
 		self.internal_error_occured = False
