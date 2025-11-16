@@ -9,8 +9,6 @@ from typing import Any, Coroutine
 from discord import Intents, Object
 from discord.ext.commands import Bot
 
-from encryption import Encryption
-
 class Client(Bot):
 	def __init__(self):
 		with open("metadata.json") as metadata_file:
@@ -31,12 +29,6 @@ class Client(Bot):
 		await self.tree.sync()
 
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
-		self.encryption = Encryption()
-		try:
-			self.encryption.load_credentials()
-		except FileNotFoundError:
-			self.encryption.generate_credentials()
-		
 		self.database = AsyncIOMotorClient(
 			os.getenv("MONGO"),
 			tls = True,
