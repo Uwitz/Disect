@@ -50,11 +50,11 @@ class Developer(Cog):
 		try:
 			await self.bot.load_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_SUCCESS')} Loaded `cogs.{extension}` extension"
+				f"{self.bot.metadata.get('EMOJI_SUCCESS')} Loaded `cogs.{extension}` extension"
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_FAIL')} Unable to load `cogs.{extension}`\n```python\n{error}\n```",
+				f"{self.bot.metadata.get('EMOJI_FAIL')} Unable to load `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
@@ -62,16 +62,16 @@ class Developer(Cog):
 	@autocomplete(extension = loaded_extension_list)
 	async def disable(self, interaction: Interaction, extension: str):
 		if extension == "developer":
-			return await interaction.response.send_message(f"{os.getenv('EMOJI_FAIL')} Unloading `cogs.{extension}` is disallowed")
+			return await interaction.response.send_message(f"{self.bot.metadata.get('EMOJI_FAIL')} Unloading `cogs.{extension}` is disallowed")
 		try:
 			await self.bot.unload_extension(f"cogs.{extension}")
 			self.bot.loaded_extension_list.remove(extension)
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_SUCCESS')} Unloaded `cogs.{extension}` extension"
+				f"{self.bot.metadata.get('EMOJI_SUCCESS')} Unloaded `cogs.{extension}` extension"
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_FAIL')} Unable to unload `cogs.{extension}`\n```python\n{error}\n```",
+				f"{self.bot.metadata.get('EMOJI_FAIL')} Unable to unload `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
@@ -81,11 +81,11 @@ class Developer(Cog):
 		try:
 			await self.bot.reload_extension(f"cogs.{extension}")
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_SUCCESS')} Reloaded `cogs.{extension}` extension"
+				f"{self.bot.metadata.get('EMOJI_SUCCESS')} Reloaded `cogs.{extension}` extension"
 			)
 		except Exception as error:
 			await interaction.response.send_message(
-				f"{os.getenv('EMOJI_FAIL')} Unable to reload `cogs.{extension}`\n```python\n{error}\n```",
+				f"{self.bot.metadata.get('EMOJI_FAIL')} Unable to reload `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
 
@@ -103,7 +103,7 @@ class Developer(Cog):
 		ping = round(self.bot.latency * 1000)
 		efficiency_description = "peak" if ping <= 50 and len(unloaded_extensions) == 0 else ("critical" if self.bot.internal_error_occured else "degraded")
 		status = "critical-health" if self.bot.internal_error_occured else ("degraded-health" if len(unloaded_extensions) > 0 or ping >= 125 else "good-health")
-		ping_emoji = os.getenv('EMOJI_GOODPING') if ping <= 50 else (os.getenv('EMOJI_MODERATEPING') if ping <= 125 else os.getenv('EMOJI_BADPING'))
+		ping_emoji = self.bot.metadata.get('EMOJI_GOODPING') if ping <= 50 else (self.bot.metadata.get('EMOJI_MODERATEPING') if ping <= 125 else self.bot.metadata.get('EMOJI_BADPING'))
 		
 		embed = Embed(
 			description = f"Running build `{self.bot.build}` with `{efficiency_description}` performance",
@@ -132,4 +132,4 @@ class Developer(Cog):
 		await interaction.response.send_message(embed = embed)
 
 async def setup(bot: Bot):
-	await bot.add_cog(Developer(bot), guild = Object(os.getenv("GUILD")))
+	await bot.add_cog(Developer(bot), guild = Object(bot.metadata.get("GUILD")))
