@@ -1,3 +1,4 @@
+import asyncio
 import os
 import json
 import traceback
@@ -21,7 +22,7 @@ class Client(Bot):
 		super().__init__(intents = intents, command_prefix = "/")
 
 	async def start(self, *args, **kwargs):
-		self.core_guild = int(os.getenv("GUILD"))
+		self.core_guild = int(self.bot.metadata.get("GUILD"))
 		await super().start(*args, **kwargs)
 
 	async def sync_commands(self):
@@ -30,12 +31,12 @@ class Client(Bot):
 
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
 		self.database = AsyncIOMotorClient(
-			os.getenv("MONGO"),
+			self.bot.metadata.get("MONGO"),
 			tls = True,
 			tlsCertificateKeyFile = "mongo_cert.pem"
 		)["disect"]
 		self.chatsync_db = AsyncIOMotorClient(
-			os.getenv("MONGO"),
+			self.bot.metadata.get("MONGO"),
 			tls = True,
 			tlsCertificateKeyFile = "mongo_cert.pem"
 		)["channelsync"]
@@ -53,6 +54,11 @@ class Client(Bot):
 
 		self.loop.create_task(self.sync_commands())
 
-if __name__ == "__main__":
+async def main():
 	load_dotenv(find_dotenv())
-	Client().run(os.getenv("TOKEN"))
+	bot = Client()
+	async with bot:
+		await bot.start(os.getenv("TOKEN"))
+
+if __name__ == "__main__":
+	asyncio.run(main())
