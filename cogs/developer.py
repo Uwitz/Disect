@@ -163,14 +163,17 @@ class Developer(Cog):
 			name = "> Loaded",
 			value = "```diff\n" + "\n".join(f"+ {ext}" for ext in self.bot.loaded_extension_list) + "\n```",
 			inline = False
-		).add_field(
-			name = "> Unloaded",
-			value = "```diff\n" + "\n".join(f"- {ext}" for ext in unloaded_extensions) + "\n```",
-			inline = True
 		).set_author(
 			name = "Health Status",
 			icon_url = f"https://cdn.uwitz.org/r/{status}.png"
 		)
+
+		if self.bot.unloaded_extensions_list != []:
+			embed.add_field(
+				name = "> Unloaded",
+				value = "```diff\n" + "\n".join(f"- {ext}" for ext in unloaded_extensions) + "\n```",
+				inline = True
+			)
 
 		await interaction.response.send_message(embed = embed)
 
