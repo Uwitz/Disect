@@ -116,7 +116,7 @@ class Developer(Cog):
 
 		embed = Embed(
 			description = "# Reloaded All Cog Extensions",
-			colour = 0x2B2D31
+			colour = 0xFF7979
 		).add_field(
 			name = "> Loaded",
 			value = "```diff\n" + "\n".join(f"+ {ext}" for ext in self.bot.loaded_extension_list) + "\n```",
@@ -150,7 +150,7 @@ class Developer(Cog):
 		
 		embed = Embed(
 			description = f"Running build `{self.bot.build}` with `{efficiency_description}` performance",
-			colour = 0x2B2D31
+			colour = 0xFF7979
 		).add_field(
 			name = "> Ping",
 			value = f"{ping_emoji} `{ping}ms`",
