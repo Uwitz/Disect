@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from typing import List
 
@@ -88,6 +89,48 @@ class Developer(Cog):
 				f"{self.bot.metadata.get('EMOJI_FAIL')} Unable to reload `cogs.{extension}`\n```python\n{error}\n```",
 				ephemeral = True
 			)
+
+	@cog.command(name = "reboot", description = "Reloads all the cogs.")
+	async def reboot(self, interaction: Interaction):
+		for extension in self.bot.loaded_extension_list:
+			await self.bot.unload_extension(f"cogs.{extension}")
+			self.bot.loaded_extension_list.remove(extension)
+		for file in os.listdir("./cogs"):
+			if file.endswith(".py"):
+				try:
+					await self.load_extension(f"cogs.{file[:-3]}")
+					self.loaded_extension_list.append(file[:-3])
+					print(f"Loaded \"{file[:-3]}\" extension")
+				except Exception as error:
+					self.unloaded_extension_list.append(file[:-3])
+					traceback.print_exc(error)
+					continue
+
+		unloaded_extensions = [
+			extension
+			for extension in [
+				extension[:-3]
+				for extension in os.listdir("./cogs") if extension.endswith(".py")
+			] if extension not in self.bot.loaded_extension_list
+		]
+
+		embed = Embed(
+			description = "# Reloaded All Cog Extensions",
+			colour = 0x2B2D31
+		).add_field(
+			name = "> Loaded",
+			value = "```diff\n" + "\n".join(f"+ {ext}" for ext in self.bot.loaded_extension_list) + "\n```",
+			inline = False
+		)
+
+		if self.bot.unloaded_extensions_list != []:
+			embed.add_field(
+				name = "> Failed to load",
+				value = "```diff\n" + "\n".join(f"- {ext}" for ext in unloaded_extensions) + "\n```",
+				inline = True
+			)
+
+		await interaction.response.send_message(embed = embed)
 
 	@command(name = "health", description = "Check the bot's developer information.")
 	async def health(self, interaction: Interaction):
