@@ -37,7 +37,7 @@ class Greeting(Cog):
             )
             embed = Embed(
                 timestamp = datetime.now(),
-                description = f"Your account is too new, therefore not trusted to participate and interact with the discord server.\nThis is to prevent spam accounts joining our Discord Server, please rejoin <t:{reletive_timestamp}:R>.\n\nIf you'd like to join the discord server regardless of this restriction, please email us at `border@uwitz.org` with your Discord ID.",
+                description = f"Your account is too new, therefore not trusted to participate or interact with the discord server.\nThis is to prevent spam accounts joining our Discord Server, please rejoin <t:{reletive_timestamp}:R>.\n\nIf you'd like to join the discord server regardless of this restriction, please email us at `border@uwitz.org` with your Discord ID.",
                 colour = 0xFF7979
             ).set_author(
                 name = "Disabled Account",
@@ -49,18 +49,21 @@ class Greeting(Cog):
             await member.send(embed = embed)
 
             blocked_embed = Embed(
-                description = "Account is too recent",
-                colour = 0x2B2D31,
+                description = f"<@!{member.id}>'s account has been created too recently. Account has been quarentined.",
+                colour = 0xFF7979,
                 timestamp = datetime.now().isoformat()
             ).set_author(
                 name = "Account Disabled",
                 icon_url = "https://cdn.uwitz.org/r/red-hand.png"
+            ).set_footer(
+                text = "Automated Action"
             )
 
             await member.add_roles(disabled_role, reason = "Disabled User from interacting with Server.")
+            await member.guild.get_channel(server_config.get("moderation").get("logs")).send(embed = blocked_embed)
 
         else:
-            if ((not member.pending) and not server_config.get("roles").get("disabled") in [role.id for role in member.roles]):
+            if ((not member.pending) and server_config.get("roles").get("disabled") not in [role.id for role in member.roles]):
                 if server_config.get("join_greeting"):
                     embed = Embed(
                         timestamp = datetime.now(),
@@ -72,7 +75,7 @@ class Greeting(Cog):
                                 f"Welcome to {member.guild.name} <@!{member.id}>!"
                             ]
                         ),
-                        colour = 0x2B2D31
+                        colour = 0xFF7979
                     ).set_author(
                         name = random.choice(
                             [
@@ -80,7 +83,6 @@ class Greeting(Cog):
                                 f"Welcome {member.display_name}!",
                                 f"{member.display_name} Entered!",
                                 f"{member.display_name} Landed",
-                                f"{member.display_name} crossed the border",
                                 f"Welcome onboard {member.display_name}!"
                             ]
                         ),
