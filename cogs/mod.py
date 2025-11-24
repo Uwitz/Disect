@@ -14,7 +14,7 @@ class Mod(Cog):
 
 	@Cog.listener("on_message")
 	async def message_filter(self, message: Message):
-		if not message.guild:
+		if not message.guild or message.author.bot:
 			return
 		guild_config = await self.bot.database["config"].find_one(
 			{
@@ -33,6 +33,24 @@ class Mod(Cog):
 					embed = embed,
 					delete_after = 3.0
 				)
+
+	@Cog.listener("on_message_delete")
+	async def message_deletion(self, message: Message):
+		guild_config = await self.bot.database["config"].find_one(
+			{
+				"_id": message.guild.id
+			}
+		)
+		if message.guild and not message.author.bot:
+			embed = Embed(
+				description = f"**Author:** <@!{message.author.id}> (`{message.author.id}`)\n\n**Message:**\n```\n{message.content.replace("`", "\`")}\n```",
+				timestamp = datetime.now(),
+				colour = 0xFF7A7A
+			).set_author(
+				name = message.author.display_name,
+				icon_url = message.author.display_avatar.url
+			)
+			await message.guild.get_channel(guild_config.get("channels").get("message_log")).send(embed = embed)
 
 	@command(
 		name = "ban",
