@@ -1,9 +1,8 @@
-import os
 import re
 
 from datetime import datetime, timedelta
 
-from discord import Embed, Forbidden, Interaction, Member, TextChannel
+from discord import Embed, Forbidden, Interaction, Member, Message, TextChannel
 from discord.app_commands import command, describe
 from discord.ext.commands import Cog
 
@@ -12,6 +11,28 @@ from cogs.utils.checks import Checks
 class Mod(Cog):
 	def __init__(self, bot):
 		self.bot = bot
+
+	@Cog.listener("on_message")
+	async def message_filter(self, message: Message):
+		if not message.guild:
+			return
+		guild_config = await self.bot.database["config"].find_one(
+			{
+				"_id": message.guild.id
+			}
+		)
+		if message.author.top_role == message.guild.get_role(guild_config.get("roles").get("member")):
+			if ((message.content.count("\n") >= 5 or len(message.content) >= 500) and message.content.count("```") != 2) and message.channel.name != "help":
+				embed = Embed(
+					colour = 0xFF7A7A,
+					description = f"{self.bot.metadata.get("EMOJI_FAIL")} Your message has been considered spam."
+				)
+				await message.delete()
+				await message.channel.send(
+					content = f"<@!{message.author.id}>",
+					embed = embed,
+					delete_after = 3.0
+				)
 
 	@command(
 		name = "ban",
