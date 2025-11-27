@@ -8,5 +8,6 @@ class Checks:
                 if role == role_.id:
                     return True
 
-                else: continue
+                else:
+                    continue
         return False

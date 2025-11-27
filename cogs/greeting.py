@@ -60,7 +60,7 @@ class Greeting(Cog):
             )
 
             await member.add_roles(disabled_role, reason = "Disabled User from interacting with Server.")
-            await member.guild.get_channel(server_config.get("moderation").get("logs")).send(embed = blocked_embed)
+            await member.guild.get_channel(server_config.get("channels").get("moderation_log")).send(embed = blocked_embed)
 
         else:
             if ((not member.pending) and server_config.get("roles").get("disabled") not in [role.id for role in member.roles]):
