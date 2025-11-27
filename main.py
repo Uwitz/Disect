@@ -22,7 +22,7 @@ class Client(Bot):
 		super().__init__(intents = intents, command_prefix = "/")
 
 	async def start(self, *args, **kwargs):
-		self.core_guild = int(self.bot.metadata.get("GUILD"))
+		self.core_guild = int(self.bot.metadata.get("guild_id"))
 		await super().start(*args, **kwargs)
 
 	async def sync_commands(self):
@@ -31,12 +31,12 @@ class Client(Bot):
 
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
 		self.database = AsyncIOMotorClient(
-			self.bot.metadata.get("MONGO"),
+			os.getenv("MONGO"),
 			tls = True,
 			tlsCertificateKeyFile = "mongo_cert.pem"
 		)["disect"]
 		self.chatsync_db = AsyncIOMotorClient(
-			self.bot.metadata.get("MONGO"),
+			os.getenv("MONGO"),
 			tls = True,
 			tlsCertificateKeyFile = "mongo_cert.pem"
 		)["channelsync"]

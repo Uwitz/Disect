@@ -201,4 +201,4 @@ class Developer(Cog):
 		await interaction.response.send_message(embed = embed)
 
 async def setup(bot: Bot):
-	await bot.add_cog(Developer(bot), guild = Object(bot.metadata.get("GUILD")))
+	await bot.add_cog(Developer(bot), guild = Object(bot.metadata.get("guild_id")))
