@@ -48,7 +48,8 @@ class Developer(Cog):
 	cog = Group(name="cog", description = "Group of commands to manage cogs.")
 
 	@Cog.listener("on_error")
-	async def error_handler(self, event, *args, **kwargs):
+	async def error_handler(self, event):
+		self.bot.internal_error_occured = True
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
 				url = self.bot.metadata.get("webhook"),
