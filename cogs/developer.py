@@ -1,6 +1,9 @@
+import aiohttp
+import asyncio
 import os
 import traceback
 
+from datetime import datetime, timezone
 from typing import List
 
 from discord import Embed, Interaction, Object
@@ -44,6 +47,26 @@ class Developer(Cog):
 		]
 
 	cog = Group(name="cog", description = "Group of commands to manage cogs.")
+
+	@Cog.listener("on_error")
+	async def error_handler(self, event, *args, **kwargs):
+		async with aiohttp.ClientSession() as session:
+			async with session.post(
+				url = self.bot.metadata.get("webhook"),
+				json = {
+					"embeds": [
+						{
+							"description": f"## {self.bot.metadata.get("emojis").get("error")} {event} Error\n\n```py\n{traceback.format_exc()}\n```",
+							"colour": 16733525,
+							"footer": self.bot.metadata.get("build"),
+							"timestamp": datetime.now(timezone.utc).isoformat()
+						}
+					],
+					"flags": 4096
+				}
+			) as response:
+				if response.status not in (200, 204):
+					print("ERROR: Unable to send error webhook.")
 
 	@cog.command(name = "enable", description = "Load a cog to the bot's runtime")
 	@autocomplete(extension = unloaded_extension_list)
