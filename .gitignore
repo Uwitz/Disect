@@ -164,3 +164,11 @@ cython_debug/
 #.idea/
 *.pem
 resources/credentials.json
+
+# --- AI Agent Config (local only) ---
+COMMANDCODE.md
+CLAUDE.md
+.claude/
+.commandcode/
+.opencode/
+WORKFLOW_STATE.md
